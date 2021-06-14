@@ -62,40 +62,6 @@ public class Paddle : MonobitEngine.MonoBehaviour
         transform.name = input;
     }
 
-    /*public void Init(bool isRightPaddle, int ID)
-    {
-        isRight = isRightPaddle;
-
-        Vector2 pos = Vector2.zero;
-
-        if (isRightPaddle)
-        {
-            // Place paddle on the right of screen
-            // 画面右側にパドルを配置
-            pos = new Vector2(GameManager.topRight.x, 0);
-            pos -= Vector2.right * transform.localScale.x;// Move a bit to the leht
-
-            input = "PaddleRight";
-        }
-        else
-        {
-
-            monobitView.TransferOwnership(ID);
-            // Place paddle on the left of screen
-            // 画面左側にパドルを配置
-            pos = new Vector2(GameManager.botttomLeft.x, 0);
-            pos += Vector2.right * transform.localScale.x;// Move a bit to the right
-
-            input = "PaddleLeft";
-        }
-
-        //Update this paddle's position
-        // このパドルの位置を更新
-        transform.position = pos;
-
-        transform.name = input;
-    }*/
-
     // Update is called once per frame
     // Update はフレームごとに 1 回呼び出されます
     void Update() {
@@ -104,9 +70,6 @@ public class Paddle : MonobitEngine.MonoBehaviour
         if (!m_MonobitView.isMine) {
             return;
         }
-
-        // Now let's move the paddle!
-        // パドルを動かす!
 
         //GetAxis is a number between -1 to 1(-1 for down, 1 for up)
         //GetAxis は -1 から 1 までの数値です (下は -1、上は 1)

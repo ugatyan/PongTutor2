@@ -5,18 +5,11 @@ using MonobitEngine;
 
 public class GameManager : MonobitEngine.MonoBehaviour
 {
-    //public Ball ball;
-    //public Paddle paddle;
-
     GameObject paddle;
     GameObject ball;
 
-
-
     public static Vector2 botttomLeft;// ‰º¶
     public static Vector2 topRight;// ‰Eã
-
-    public int id;
 
     // Use this for initialization 
     //‰Šú‰»ˆ—
@@ -34,7 +27,6 @@ public class GameManager : MonobitEngine.MonoBehaviour
 
     public void ballinit() {
         ball= MonobitEngine.MonobitNetwork.Instantiate("Ball", Vector3.zero, Quaternion.identity, 0, null, true, true, false);
-
     }
 }
 

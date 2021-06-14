@@ -80,22 +80,19 @@ public class Ball : MonobitEngine.MonoBehaviour
     void OnTriggerEnter2D(Collider2D other) {
         if (other.tag == "Paddle") {
             Debug.Log("当たった");
-            bool isRight = other.GetComponent<Paddle>().m_MonobitView.isMine;
-            Debug.Log("isRight="+isRight);
+            bool Mine = other.GetComponent<Paddle>().m_MonobitView.isMine;
+            Debug.Log("isMine="+Mine);
 
             // If hitting right paddle and moving right, flip direction
             // 右のパドルを押して右に移動すると、方向が反転します
-            if (isRight == true && direction.x > 0) {
+            if (Mine == true && direction.x > 0) {
                 direction.x = -direction.x;
             }
             // If hitting left paddle and moving right, flip direction
             // 左のパドルを押して右に移動すると、方向が反転します
-            if (isRight == false && direction.x < 0) {
+            if (Mine == false && direction.x < 0) {
                 direction.x = -direction.x;
             }
-
-
-
         }    
     }
 }

@@ -45,10 +45,10 @@ public class NetworkConnection : MonobitEngine.MonoBehaviour
             // ƒ‹[ƒ€‚É“üŽº‚µ‚Ä‚¢‚éê‡
             if (MonobitNetwork.inRoom&& !Begin) {
 
-                if (!set) {
+                /*if (!set) {
                     set = true;
                     gm.Paddleinit();
-                }
+                }*/
 
                 if (MonobitNetwork.room.playerCount >= MonobitNetwork.room.maxPlayers) {
                     if (MonobitNetwork.inRoom && MonobitNetwork.isHost) {
@@ -132,5 +132,6 @@ public class NetworkConnection : MonobitEngine.MonoBehaviour
     [MunRPC]
     void seting() {
         Begin = true;
+        gm.Paddleinit();
     }
 }
