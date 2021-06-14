@@ -11,6 +11,24 @@ public class Ball : MonobitEngine.MonoBehaviour
     float radius;
     Vector2 direction;
 
+    // MonobitView コンポーネント
+    MonobitEngine.MonobitView m_MonobitView = null;
+
+    void Awake() {
+        // すべての親オブジェクトに対して MonobitView コンポーネントを検索する
+        if (GetComponentInParent<MonobitEngine.MonobitView>() != null) {
+            m_MonobitView = GetComponentInParent<MonobitEngine.MonobitView>();
+        }
+        // 親オブジェクトに存在しない場合、すべての子オブジェクトに対して MonobitView コンポーネントを検索する
+        else if (GetComponentInChildren<MonobitEngine.MonobitView>() != null) {
+            m_MonobitView = GetComponentInChildren<MonobitEngine.MonobitView>();
+        }
+        // 親子オブジェクトに存在しない場合、自身のオブジェクトに対して MonobitView コンポーネントを検索して設定する
+        else {
+            m_MonobitView = GetComponent<MonobitEngine.MonobitView>();
+        }
+    }
+
     // Start is called before the first frame update
     // 最初のフレーム更新の前に Start が呼び出されます
     void Start() {
@@ -21,6 +39,12 @@ public class Ball : MonobitEngine.MonoBehaviour
     // Update is called once per frame
     // Update はフレームごとに 1 回呼び出されます
     void Update() {
+
+        // オブジェクト所有権を所持しなければ実行しない
+        if (!m_MonobitView.isMine) {
+            return;
+        }
+
         transform.Translate(direction * speed * Time.deltaTime);
 
         // Bounce 
@@ -55,7 +79,9 @@ public class Ball : MonobitEngine.MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other) {
         if (other.tag == "Paddle") {
-            bool isRight = other.GetComponent<Paddle>().isRight;
+            Debug.Log("当たった");
+            bool isRight = other.GetComponent<Paddle>().m_MonobitView.isMine;
+            Debug.Log("isRight="+isRight);
 
             // If hitting right paddle and moving right, flip direction
             // 右のパドルを押して右に移動すると、方向が反転します
@@ -67,6 +93,9 @@ public class Ball : MonobitEngine.MonoBehaviour
             if (isRight == false && direction.x < 0) {
                 direction.x = -direction.x;
             }
+
+
+
         }    
     }
 }

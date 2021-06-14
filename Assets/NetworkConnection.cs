@@ -43,10 +43,23 @@ public class NetworkConnection : MonobitEngine.MonoBehaviour
         if (MonobitNetwork.isConnect) {
 
             // ルームに入室している場合
-            if (MonobitNetwork.inRoom&& !Begin&& MonobitNetwork.isHost) {
-                if(GUILayout.Button("スタート", GUILayout.Width(150))) {
-                    Begin = true;
+            if (MonobitNetwork.inRoom&& !Begin) {
+
+                if (!set) {
                     set = true;
+                    gm.Paddleinit();
+                }
+
+                if (MonobitNetwork.room.playerCount >= MonobitNetwork.room.maxPlayers) {
+                    if (MonobitNetwork.inRoom && MonobitNetwork.isHost) {
+                        if (GUILayout.Button("スタート")) {
+                            MonobitNetwork.room.open = false;
+
+                            monobitView.RPC("seting", MonobitEngine.MonobitTargets.All, null);
+                            seting();
+                            gm.ballinit();
+                        }
+                    }
                 }
 
                 // ボタン入力でルームから退室
@@ -54,13 +67,7 @@ public class NetworkConnection : MonobitEngine.MonoBehaviour
                     MonobitNetwork.LeaveRoom();
                 }
             }
-            else if (MonobitNetwork.inRoom && !Begin&& !MonobitNetwork.isHost) {
-                seting(MonobitEngine.MonobitNetwork.player.ID);
-                // ボタン入力でルームから退室
-                if (GUILayout.Button("終了", GUILayout.Width(150))) {
-                    MonobitNetwork.LeaveRoom();
-                }
-            }
+            
 
             // ルームに入室している場合
             if (MonobitNetwork.inRoom && Begin) {
@@ -118,20 +125,12 @@ public class NetworkConnection : MonobitEngine.MonoBehaviour
     void Update()
     {
         
-            // MUNサーバに接続しており、かつルームに入室している場合
-            if (MonobitNetwork.isConnect && MonobitNetwork.inRoom) {
-              // プレイヤーキャラクタが未登場の場合に登場させる
-              if (set) {
-                
-                gm.Gameinit();
-                set = false;
-              }
-            }
+
         
        
     }
     [MunRPC]
-    void seting(int noHostID) {
-        gm.id = noHostID;
+    void seting() {
+        Begin = true;
     }
 }

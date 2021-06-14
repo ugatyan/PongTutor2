@@ -6,7 +6,7 @@ using MonobitEngine;
 public class Paddle : MonobitEngine.MonoBehaviour
 {
     // MonobitView コンポーネント
-    MonobitEngine.MonobitView m_MonobitView = null;
+    public MonobitEngine.MonobitView m_MonobitView = null;
 
     [SerializeField]
     float speed;
@@ -37,9 +37,32 @@ public class Paddle : MonobitEngine.MonoBehaviour
     void Start()
     {
         height = transform.localScale.y;
+
+        Vector2 pos = Vector2.zero;
+
+        if (MonobitNetwork.isHost) {
+            pos = new Vector2(GameManager.topRight.x, 0);
+            pos -= Vector2.right * transform.localScale.x;// Move a bit to the leht
+
+            isRight = true;
+
+            input = "PaddleRight";
+        }
+        else {
+            pos = new Vector2(GameManager.botttomLeft.x, 0);
+            pos += Vector2.right * transform.localScale.x;// Move a bit to the right
+
+            isRight = false;
+
+            input = "PaddleLeft";
+        }
+
+        transform.position = pos;
+
+        transform.name = input;
     }
 
-    public void Init(bool isRightPaddle, int ID)
+    /*public void Init(bool isRightPaddle, int ID)
     {
         isRight = isRightPaddle;
 
@@ -71,7 +94,7 @@ public class Paddle : MonobitEngine.MonoBehaviour
         transform.position = pos;
 
         transform.name = input;
-    }
+    }*/
 
     // Update is called once per frame
     // Update はフレームごとに 1 回呼び出されます
