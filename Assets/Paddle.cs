@@ -5,6 +5,9 @@ using MonobitEngine;
 
 public class Paddle : MonobitEngine.MonoBehaviour
 {
+    // MonobitView コンポーネント
+    MonobitEngine.MonobitView m_MonobitView = null;
+
     [SerializeField]
     float speed;
 
@@ -13,6 +16,22 @@ public class Paddle : MonobitEngine.MonoBehaviour
     string input;
     public bool isRight;
 
+    void Awake() {
+        // すべての親オブジェクトに対して MonobitView コンポーネントを検索する
+        if (GetComponentInParent<MonobitEngine.MonobitView>() != null) {
+            m_MonobitView = GetComponentInParent<MonobitEngine.MonobitView>();
+        }
+        // 親オブジェクトに存在しない場合、すべての子オブジェクトに対して MonobitView コンポーネントを検索する
+        else if (GetComponentInChildren<MonobitEngine.MonobitView>() != null) {
+            m_MonobitView = GetComponentInChildren<MonobitEngine.MonobitView>();
+        }
+        // 親子オブジェクトに存在しない場合、自身のオブジェクトに対して MonobitView コンポーネントを検索して設定する
+        else {
+            m_MonobitView = GetComponent<MonobitEngine.MonobitView>();
+        }
+    }
+
+
     // Use this for initialization
     //初期化処理
     void Start()
@@ -20,7 +39,7 @@ public class Paddle : MonobitEngine.MonoBehaviour
         height = transform.localScale.y;
     }
 
-    public void Init(bool isRightPaddle)
+    public void Init(bool isRightPaddle, int ID)
     {
         isRight = isRightPaddle;
 
@@ -37,6 +56,8 @@ public class Paddle : MonobitEngine.MonoBehaviour
         }
         else
         {
+
+            monobitView.TransferOwnership(ID);
             // Place paddle on the left of screen
             // 画面左側にパドルを配置
             pos = new Vector2(GameManager.botttomLeft.x, 0);
@@ -55,13 +76,18 @@ public class Paddle : MonobitEngine.MonoBehaviour
     // Update is called once per frame
     // Update はフレームごとに 1 回呼び出されます
     void Update() {
-       // if (MonobitView.isMine) {
-            // Now let's move the paddle!
-            // パドルを動かす!
 
-            //GetAxis is a number between -1 to 1(-1 for down, 1 for up)
-            //GetAxis は -1 から 1 までの数値です (下は -1、上は 1)
-            float move = Input.GetAxis(input) * Time.deltaTime * speed;
+        // オブジェクト所有権を所持しなければ実行しない
+        if (!m_MonobitView.isMine) {
+            return;
+        }
+
+        // Now let's move the paddle!
+        // パドルを動かす!
+
+        //GetAxis is a number between -1 to 1(-1 for down, 1 for up)
+        //GetAxis は -1 から 1 までの数値です (下は -1、上は 1)
+        float move = Input.GetAxis(input) * Time.deltaTime * speed;
 
             // Restrict paddle movement
             // パドルの動きを制限する
@@ -78,7 +104,7 @@ public class Paddle : MonobitEngine.MonoBehaviour
             }
 
             transform.Translate(move * Vector2.up);
-        //}
+       
     }
 }
 

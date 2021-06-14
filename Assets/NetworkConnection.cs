@@ -11,8 +11,9 @@ public class NetworkConnection : MonobitEngine.MonoBehaviour
 
     public GameManager gm;
 
-    /** paddle.*/
-    private bool paddle = false;
+  
+    private bool Begin = false;
+    bool set = false;
 
     MonobitEngine.RoomSettings settings;
 
@@ -42,9 +43,30 @@ public class NetworkConnection : MonobitEngine.MonoBehaviour
         if (MonobitNetwork.isConnect) {
 
             // ルームに入室している場合
-            if (MonobitNetwork.inRoom) {
+            if (MonobitNetwork.inRoom&& !Begin&& MonobitNetwork.isHost) {
+                if(GUILayout.Button("スタート", GUILayout.Width(150))) {
+                    Begin = true;
+                    set = true;
+                }
+
                 // ボタン入力でルームから退室
-                if (GUILayout.Button("Leave Room", GUILayout.Width(150))) {
+                if (GUILayout.Button("終了", GUILayout.Width(150))) {
+                    MonobitNetwork.LeaveRoom();
+                }
+            }
+            else if (MonobitNetwork.inRoom && !Begin&& !MonobitNetwork.isHost) {
+                seting(MonobitEngine.MonobitNetwork.player.ID);
+                // ボタン入力でルームから退室
+                if (GUILayout.Button("終了", GUILayout.Width(150))) {
+                    MonobitNetwork.LeaveRoom();
+                }
+            }
+
+            // ルームに入室している場合
+            if (MonobitNetwork.inRoom && Begin) {
+               
+                // ボタン入力でルームから退室
+                if (GUILayout.Button("終了", GUILayout.Width(150))) {
                     MonobitNetwork.LeaveRoom();
                 }
             }
@@ -56,23 +78,23 @@ public class NetworkConnection : MonobitEngine.MonoBehaviour
                 GUILayout.BeginHorizontal();
 
                 // ルーム名の入力
-                GUILayout.Label("RoomName : ");
+                GUILayout.Label("ルーム名 : ");
                 roomName = GUILayout.TextField(roomName, GUILayout.Width(200));
                 
-                // MUNサーバに接続する
+                /*// MUNサーバに接続する
                 if (GUILayout.Button("Connect Server", GUILayout.Width(150))) {
                     MonobitNetwork.ConnectServer("Pong2_v1.0");
-                }
+                }*/
               
                 // ルームを作成
-                if (GUILayout.Button("Create Room", GUILayout.Width(100))) {
+                if (GUILayout.Button("ルームを作成", GUILayout.Width(100))) {
                     MonobitNetwork.CreateRoom(roomName,settings,lobby);
                 }
 
                 GUILayout.EndHorizontal();
 
                 // 現在存在するルームからランダムに入室する
-                if (GUILayout.Button("Join Random Room", GUILayout.Width(200))) {
+                if (GUILayout.Button("ランダムマッチング", GUILayout.Width(150))) {
                     MonobitNetwork.JoinRandomRoom();
                 }
 
@@ -84,7 +106,7 @@ public class NetworkConnection : MonobitEngine.MonoBehaviour
                                       room.playerCount,
                                       (room.maxPlayers == 0) ? "-" : room.maxPlayers.ToString());
 
-                    if (GUILayout.Button("Enter Room : " + strRoomInfo)) {
+                    if (GUILayout.Button("部屋に入る : " + strRoomInfo)) {
                         MonobitNetwork.JoinRoom(room.name);
                     }
                 }
@@ -98,13 +120,18 @@ public class NetworkConnection : MonobitEngine.MonoBehaviour
         
             // MUNサーバに接続しており、かつルームに入室している場合
             if (MonobitNetwork.isConnect && MonobitNetwork.inRoom) {
-                // プレイヤーキャラクタが未登場の場合に登場させる
-                if (!paddle) {
-                  paddle = true;
-                  gm.Gameinit();
-                }
+              // プレイヤーキャラクタが未登場の場合に登場させる
+              if (set) {
+                
+                gm.Gameinit();
+                set = false;
+              }
             }
         
        
+    }
+    [MunRPC]
+    void seting(int noHostID) {
+        gm.id = noHostID;
     }
 }

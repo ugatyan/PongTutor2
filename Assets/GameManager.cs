@@ -11,6 +11,8 @@ public class GameManager : MonobitEngine.MonoBehaviour
     public static Vector2 botttomLeft;// 下左
     public static Vector2 topRight;// 右上
 
+    public int id;
+
     // Use this for initialization 
     //初期化処理
     //void Start()
@@ -32,16 +34,19 @@ public class GameManager : MonobitEngine.MonoBehaviour
                 paddle1.Init (true);//right paddle 右パドル
                 paddle2.Init(false);//left paddle 左パドル*/
 
-        if (MonobitNetwork.isHost) {
+       if (MonobitNetwork.isHost) {
             // 球を(他クライアント上にも)生成
-            Instantiate(ball);
+            //Instantiate(ball);
             Paddle paddle1 = Instantiate(paddle) as Paddle;
-            paddle1.Init(true);//right paddle 右パドル
-        }
-        else {
+            paddle1.Init(true,0);//right paddle 右パドル
             Paddle paddle2 = Instantiate(paddle) as Paddle;
-            paddle2.Init(false);//left paddle 左パドル*/
+            paddle2.Init(false, id);//left paddle 左パドル
+
         }
+        /*else {
+            Paddle paddle2 = Instantiate(paddle) as Paddle;
+            paddle2.Init(false,id);//left paddle 左パドル
+        }*/
     }
 }
 
